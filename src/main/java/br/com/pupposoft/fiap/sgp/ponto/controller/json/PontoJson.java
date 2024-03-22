@@ -1,8 +1,8 @@
 package br.com.pupposoft.fiap.sgp.ponto.controller.json;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import br.com.pupposoft.fiap.sgp.ponto.domain.Ponto;
 import br.com.pupposoft.fiap.sgp.ponto.domain.Usuario;
@@ -16,16 +16,21 @@ import lombok.ToString;
 public class PontoJson {
 	private Long id;
 	private Long userId;
-	private String dataHora;
+	private LocalDateTime dataHora;
 	
+	
+	public PontoJson(Ponto ponto) {
+		id = ponto.getId();
+		userId = ponto.getUsuario().getId();
+		dataHora = ponto.getDataHora();
+	}
+	
+	@JsonIgnore
 	public Ponto getDomain() {
-		//2024-03-21T20:29:35.896093573
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-ddTHH:mm:ss");
-		
 		return Ponto.builder()
 				.id(id)
 				.usuario(Usuario.builder().id(userId).build())
-				.dataHora(LocalDateTime.parse(dataHora, formatter))
+				.dataHora(dataHora)
 				.build();
 	}
 }

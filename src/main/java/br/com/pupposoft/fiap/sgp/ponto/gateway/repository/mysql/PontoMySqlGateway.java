@@ -1,10 +1,12 @@
 package br.com.pupposoft.fiap.sgp.ponto.gateway.repository.mysql;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Component;
 
 import br.com.pupposoft.fiap.sgp.ponto.domain.Ponto;
+import br.com.pupposoft.fiap.sgp.ponto.domain.Usuario;
 import br.com.pupposoft.fiap.sgp.ponto.exception.ErroAoAcessarRepositorioDadosException;
 import br.com.pupposoft.fiap.sgp.ponto.gateway.PontoRepositoryGateway;
 import br.com.pupposoft.fiap.sgp.ponto.gateway.repository.jpa.PontoRepository;
@@ -47,5 +49,16 @@ public class PontoMySqlGateway implements PontoRepositoryGateway {
 		}
 	}
 
-
+	@Override
+	public List<Ponto> findByUsuario(Usuario usuario) {
+		try {
+			List<PontoEntity> pontoEntities = pontoRepository.findByUsuarioIdOrderByDataHoraDesc(usuario.getId());
+			
+			return pontoEntities.stream().map(PontoEntity::getDomain).toList();
+			
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+			throw new ErroAoAcessarRepositorioDadosException();
+		}
+	}
 }
