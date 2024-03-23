@@ -4,8 +4,8 @@ import java.util.List;
 
 import br.com.pupposoft.fiap.sgp.ponto.domain.Ponto;
 
-public interface DocumentoGateway {
+public interface GeradorDocumentoGateway {
 
-	byte[] gerarDocumento(List<Ponto> pontos);
+	byte[] gerar(List<Ponto> pontos);
 
 }
