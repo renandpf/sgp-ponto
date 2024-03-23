@@ -1,5 +1,6 @@
 package br.com.pupposoft.fiap.sgp.ponto.gateway.http;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -9,11 +10,11 @@ import br.com.pupposoft.fiap.sgp.ponto.domain.Usuario;
 import br.com.pupposoft.fiap.sgp.ponto.exception.ErrorNaIntegracaoComUsuarioServiceException;
 import br.com.pupposoft.fiap.sgp.ponto.gateway.UsuarioGateway;
 import br.com.pupposoft.fiap.sgp.ponto.gateway.http.json.UsuarioJson;
+import jakarta.validation.constraints.NotNull;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
-import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 
@@ -21,6 +22,7 @@ import okhttp3.ResponseBody;
 @Component
 public class UsuarioApiRestGateway implements UsuarioGateway {
 
+	@Autowired//NOSONAR
 	private ObjectMapper objectMapper;
 			
 	@Value("${usuario-service.base.url}")
@@ -32,17 +34,16 @@ public class UsuarioApiRestGateway implements UsuarioGateway {
 		try {
 			OkHttpClient client = new OkHttpClient().newBuilder()
 					  .build();
-					MediaType mediaType = MediaType.parse("text/plain");
-					RequestBody body = RequestBody.create("", mediaType);
 					Request request = new Request.Builder()
 					  .url("http://localhost:8080/usuarios/" + userId)
-					  .method("GET", body)
+					  .method("GET", null)
 					  .build();
 					Response response = client.newCall(request).execute();
 					
 					ResponseBody responseBody = response.body();
 					
-					UsuarioJson usuarioJson = objectMapper.readValue(responseBody.string(), UsuarioJson.class);
+					String responseBodyStr = responseBody.string();
+					UsuarioJson usuarioJson = objectMapper.readValue(responseBodyStr, UsuarioJson.class);
 					
 					return usuarioJson.getDomain();
 					
