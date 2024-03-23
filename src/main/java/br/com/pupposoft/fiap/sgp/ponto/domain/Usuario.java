@@ -10,8 +10,6 @@ import lombok.Getter;
 public class Usuario {
 	private Long id;
 	private String email;
-	private String password;
-	private List<String> roles;
 	
 	private List<Ponto> pontos;
 }

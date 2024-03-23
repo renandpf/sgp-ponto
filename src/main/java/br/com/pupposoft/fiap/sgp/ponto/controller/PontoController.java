@@ -45,4 +45,13 @@ public class PontoController {
 		
 		return pontosJson;
 	}
+	
+	@GetMapping("usuarios/{userId}/espelho-pontos")
+	public void espelho(@PathVariable("userId") Long userId) {
+		log.trace("Start userId={}", userId);
+		
+		obterPontosUseCase.solicitarEspelhoPontoPorIdUsuario(userId);
+		
+		log.trace("End");
+	}
 }
