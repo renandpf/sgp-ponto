@@ -31,13 +31,18 @@ public class UsuarioApiRestGateway implements UsuarioGateway {
 	public Usuario obtemPorUserId(Long userId) {
 		
 		try {
+			
+			final String url = basePath + "/usuarios/" + userId;
+			log.info("Get user by id user service: {}", url);
+			
 			OkHttpClient client = new OkHttpClient().newBuilder()
 					  .build();
 					Request request = new Request.Builder()
-					  .url("http://localhost:8080/usuarios/" + userId)
+					  .url(url)
 					  .method("GET", null)
 					  .build();
 					Response response = client.newCall(request).execute();
+					log.info("response={}", response);
 					if(response.isSuccessful()) {
 						ResponseBody responseBody = response.body();
 						
