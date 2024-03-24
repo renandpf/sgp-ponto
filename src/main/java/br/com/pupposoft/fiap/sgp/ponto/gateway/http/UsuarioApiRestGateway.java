@@ -8,10 +8,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.com.pupposoft.fiap.sgp.ponto.domain.Usuario;
 import br.com.pupposoft.fiap.sgp.ponto.exception.ErrorNaIntegracaoComUsuarioServiceException;
+import br.com.pupposoft.fiap.sgp.ponto.exception.UsuarioNaoEncontadoException;
 import br.com.pupposoft.fiap.sgp.ponto.gateway.UsuarioGateway;
 import br.com.pupposoft.fiap.sgp.ponto.gateway.http.json.UsuarioJson;
-import jakarta.validation.constraints.NotNull;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -39,14 +38,22 @@ public class UsuarioApiRestGateway implements UsuarioGateway {
 					  .method("GET", null)
 					  .build();
 					Response response = client.newCall(request).execute();
+					if(response.isSuccessful()) {
+						ResponseBody responseBody = response.body();
+						
+						String responseBodyStr = responseBody.string();
+						UsuarioJson usuarioJson = objectMapper.readValue(responseBodyStr, UsuarioJson.class);
+						
+						
+						return usuarioJson.getDomain();
+					}
 					
-					ResponseBody responseBody = response.body();
+					log.warn("Usuário não encontrado: {}", userId);
+					throw new UsuarioNaoEncontadoException();//NOSONAR					
 					
-					String responseBodyStr = responseBody.string();
-					UsuarioJson usuarioJson = objectMapper.readValue(responseBodyStr, UsuarioJson.class);
-					
-					return usuarioJson.getDomain();
-					
+		} catch (UsuarioNaoEncontadoException e) {
+			log.error(e.getMessage(), e);
+			throw e;
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 			throw new ErrorNaIntegracaoComUsuarioServiceException();
