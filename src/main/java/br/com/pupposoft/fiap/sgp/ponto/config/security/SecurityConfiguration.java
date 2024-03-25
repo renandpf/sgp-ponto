@@ -18,6 +18,7 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(HttpMethod.POST, "/pontos").permitAll()
                         .requestMatchers(HttpMethod.GET, "/usuarios/*/*").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/actuator/*/*").permitAll()
                         //.requestMatchers(HttpMethod.POST, "/users").hasRole("ADMIN")
                         .anyRequest().authenticated())
                 //.addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
